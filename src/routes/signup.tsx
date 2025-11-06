@@ -1,60 +1,25 @@
 import { redirect, createFileRoute } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
-import { hashPassword, prismaClient } from '~/utils/prisma'
-import { useMutation } from '~/hooks/useMutation'
-import { Auth } from '~/components/Auth'
-import { useAppSession } from '~/utils/session'
+import { useMutation } from '../hooks/useMutation'
+import { Auth } from '../components/Auth'
+import { getSupabaseServerClient } from '../utils/supabase'
 
 export const signupFn = createServerFn({ method: 'POST' })
   .inputValidator(
     (d: { email: string; password: string; redirectUrl?: string }) => d,
   )
   .handler(async ({ data }) => {
-    // Check if the user already exists
-    const found = await prismaClient.user.findUnique({
-      where: {
-        email: data.email,
-      },
+    const supabase = getSupabaseServerClient()
+    const { error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
     })
-
-    // Encrypt the password using Sha256 into plaintext
-    const password = await hashPassword(data.password)
-
-    // Create a session
-    const session = await useAppSession()
-
-    if (found) {
-      if (found.password !== password) {
-        return {
-          error: true,
-          userExists: true,
-          message: 'User already exists',
-        }
+    if (error) {
+      return {
+        error: true,
+        message: error.message,
       }
-
-      // Store the user's email in the session
-      await session.update({
-        userEmail: found.email,
-      })
-
-      // Redirect to the prev page stored in the "redirect" search param
-      throw redirect({
-        href: data.redirectUrl || '/',
-      })
     }
-
-    // Create the user
-    const user = await prismaClient.user.create({
-      data: {
-        email: data.email,
-        password,
-      },
-    })
-
-    // Store the user's email in the session
-    await session.update({
-      userEmail: user.email,
-    })
 
     // Redirect to the prev page stored in the "redirect" search param
     throw redirect({

@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { createMiddleware, json } from '@tanstack/react-start'
 import type { User } from '~/utils/users'
+import { prismaClient } from '~/utils/prisma'
 
 const userLoggerMiddleware = createMiddleware().server(async ({ next }) => {
   console.info('In: /users')
@@ -37,6 +38,13 @@ const testMiddleware = createMiddleware()
     console.info('Out: testMiddleware')
     return result
   })
+
+export async function getUserById(userId: number) {
+  const user = await prismaClient.user.findFirst({
+    where: {id: userId}
+  })
+}
+
 
 export const Route = createFileRoute('/api/users')({
   server: {
