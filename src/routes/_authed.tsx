@@ -1,71 +1,37 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { hashPassword, prismaClient } from '~/utils/prisma'
-import { Login } from '~/components/Login'
-import { getCurrentUserFn, useAppSession } from '~/utils/session'
+import { Login } from '../components/Login'
+import { getSupabaseServerClient } from '../utils/supabase'
 
 export const loginFn = createServerFn({ method: 'POST' })
-    .inputValidator((d: { email: string; password: string }) => d)
-    .handler(async ({ data }) => {
-        // Find the user
-        const user = await prismaClient.user.findUnique({
-            where: {
-                email: data.email,
-            },
-        })
-
-        // Check if the user exists
-        if (!user) {
-            return {
-                error: true,
-                userNotFound: true,
-                message: 'User not found',
-            }
-        }
-
-        // Check if the password is correct
-        const hashedPassword = await hashPassword(data.password)
-
-        if (user.password !== hashedPassword) {
-            return {
-                error: true,
-                message: 'Incorrect password',
-            }
-        }
-
-        // Create a session
-        const session = await useAppSession()
-
-        // Store the user's email in the session
-        await session.update({
-            userEmail: user.email,
-            userId: user.id.toString(),
-        })
-
-        throw redirect({ to: '/dashboard' })
+  .inputValidator((d: { email: string; password: string }) => d)
+  .handler(async ({ data }) => {
+    const supabase = getSupabaseServerClient()
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
     })
 
+    if (error) {
+      return {
+        error: true,
+        message: error.message,
+      }
+    }
+  })
+
 export const Route = createFileRoute('/_authed')({
-    beforeLoad: async ({ location }) => {
-        const user = await getCurrentUserFn()
-        // if (!context.user) {
-        //     throw new Error('Not authenticated')
-        // }
-        if (!user) {
-            throw new Error('Not authenticated')
-            // throw redirect({
-            //     to: '/login',
-            //     search: { redirect: location.href },
-            // })
-        }
+  beforeLoad: async ({ context }) => {
+    const user = await context.user
+    if (!user) {
+      throw redirect({to: '/login'})
+    }
+  },
+  errorComponent: ({ error }) => {
+    if (error.message === 'Not authenticated') {
+      return <Login />
+    }
 
-        return { user }
-    },
-    errorComponent: ({ error }) => {
-        if (error.message === 'Not authenticated') {
-            return <Login />
-        }
-
-        throw error
-    },
+    throw error
+  },
 })

@@ -14,10 +14,9 @@ import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiUsersRouteImport } from './routes/api/users'
-import { Route as AuthedPostsRouteRouteImport } from './routes/_authed/posts.route'
-import { Route as AuthedPostsIndexRouteImport } from './routes/_authed/posts.index'
-import { Route as ApiUsersUserIdRouteImport } from './routes/api/users.$userId'
+import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
+import { Route as AuthedCharactersRouteImport } from './routes/_authed/characters'
+import { Route as AuthedCampaignsRouteImport } from './routes/_authed/campaigns'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -43,25 +42,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiUsersRoute = ApiUsersRouteImport.update({
-  id: '/api/users',
-  path: '/api/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthedPostsRouteRoute = AuthedPostsRouteRouteImport.update({
-  id: '/posts',
-  path: '/posts',
+const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthedRoute,
 } as any)
-const AuthedPostsIndexRoute = AuthedPostsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthedPostsRouteRoute,
+const AuthedCharactersRoute = AuthedCharactersRouteImport.update({
+  id: '/characters',
+  path: '/characters',
+  getParentRoute: () => AuthedRoute,
 } as any)
-const ApiUsersUserIdRoute = ApiUsersUserIdRouteImport.update({
-  id: '/$userId',
-  path: '/$userId',
-  getParentRoute: () => ApiUsersRoute,
+const AuthedCampaignsRoute = AuthedCampaignsRouteImport.update({
+  id: '/campaigns',
+  path: '/campaigns',
+  getParentRoute: () => AuthedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -69,19 +63,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
-  '/posts': typeof AuthedPostsRouteRouteWithChildren
-  '/api/users': typeof ApiUsersRouteWithChildren
-  '/api/users/$userId': typeof ApiUsersUserIdRoute
-  '/posts/': typeof AuthedPostsIndexRoute
+  '/campaigns': typeof AuthedCampaignsRoute
+  '/characters': typeof AuthedCharactersRoute
+  '/dashboard': typeof AuthedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
-  '/api/users': typeof ApiUsersRouteWithChildren
-  '/api/users/$userId': typeof ApiUsersUserIdRoute
-  '/posts': typeof AuthedPostsIndexRoute
+  '/campaigns': typeof AuthedCampaignsRoute
+  '/characters': typeof AuthedCharactersRoute
+  '/dashboard': typeof AuthedDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -90,10 +83,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
-  '/_authed/posts': typeof AuthedPostsRouteRouteWithChildren
-  '/api/users': typeof ApiUsersRouteWithChildren
-  '/api/users/$userId': typeof ApiUsersUserIdRoute
-  '/_authed/posts/': typeof AuthedPostsIndexRoute
+  '/_authed/campaigns': typeof AuthedCampaignsRoute
+  '/_authed/characters': typeof AuthedCharactersRoute
+  '/_authed/dashboard': typeof AuthedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -102,19 +94,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
-    | '/posts'
-    | '/api/users'
-    | '/api/users/$userId'
-    | '/posts/'
+    | '/campaigns'
+    | '/characters'
+    | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/logout'
     | '/signup'
-    | '/api/users'
-    | '/api/users/$userId'
-    | '/posts'
+    | '/campaigns'
+    | '/characters'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
@@ -122,10 +113,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
-    | '/_authed/posts'
-    | '/api/users'
-    | '/api/users/$userId'
-    | '/_authed/posts/'
+    | '/_authed/campaigns'
+    | '/_authed/characters'
+    | '/_authed/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,7 +124,6 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   SignupRoute: typeof SignupRoute
-  ApiUsersRoute: typeof ApiUsersRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -174,70 +163,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/users': {
-      id: '/api/users'
-      path: '/api/users'
-      fullPath: '/api/users'
-      preLoaderRoute: typeof ApiUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authed/posts': {
-      id: '/_authed/posts'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof AuthedPostsRouteRouteImport
+    '/_authed/dashboard': {
+      id: '/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthedDashboardRouteImport
       parentRoute: typeof AuthedRoute
     }
-    '/_authed/posts/': {
-      id: '/_authed/posts/'
-      path: '/'
-      fullPath: '/posts/'
-      preLoaderRoute: typeof AuthedPostsIndexRouteImport
-      parentRoute: typeof AuthedPostsRouteRoute
+    '/_authed/characters': {
+      id: '/_authed/characters'
+      path: '/characters'
+      fullPath: '/characters'
+      preLoaderRoute: typeof AuthedCharactersRouteImport
+      parentRoute: typeof AuthedRoute
     }
-    '/api/users/$userId': {
-      id: '/api/users/$userId'
-      path: '/$userId'
-      fullPath: '/api/users/$userId'
-      preLoaderRoute: typeof ApiUsersUserIdRouteImport
-      parentRoute: typeof ApiUsersRoute
+    '/_authed/campaigns': {
+      id: '/_authed/campaigns'
+      path: '/campaigns'
+      fullPath: '/campaigns'
+      preLoaderRoute: typeof AuthedCampaignsRouteImport
+      parentRoute: typeof AuthedRoute
     }
   }
 }
 
-interface AuthedPostsRouteRouteChildren {
-  AuthedPostsIndexRoute: typeof AuthedPostsIndexRoute
-}
-
-const AuthedPostsRouteRouteChildren: AuthedPostsRouteRouteChildren = {
-  AuthedPostsIndexRoute: AuthedPostsIndexRoute,
-}
-
-const AuthedPostsRouteRouteWithChildren =
-  AuthedPostsRouteRoute._addFileChildren(AuthedPostsRouteRouteChildren)
-
 interface AuthedRouteChildren {
-  AuthedPostsRouteRoute: typeof AuthedPostsRouteRouteWithChildren
+  AuthedCampaignsRoute: typeof AuthedCampaignsRoute
+  AuthedCharactersRoute: typeof AuthedCharactersRoute
+  AuthedDashboardRoute: typeof AuthedDashboardRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
-  AuthedPostsRouteRoute: AuthedPostsRouteRouteWithChildren,
+  AuthedCampaignsRoute: AuthedCampaignsRoute,
+  AuthedCharactersRoute: AuthedCharactersRoute,
+  AuthedDashboardRoute: AuthedDashboardRoute,
 }
 
 const AuthedRouteWithChildren =
   AuthedRoute._addFileChildren(AuthedRouteChildren)
-
-interface ApiUsersRouteChildren {
-  ApiUsersUserIdRoute: typeof ApiUsersUserIdRoute
-}
-
-const ApiUsersRouteChildren: ApiUsersRouteChildren = {
-  ApiUsersUserIdRoute: ApiUsersUserIdRoute,
-}
-
-const ApiUsersRouteWithChildren = ApiUsersRoute._addFileChildren(
-  ApiUsersRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -245,7 +208,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   SignupRoute: SignupRoute,
-  ApiUsersRoute: ApiUsersRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
