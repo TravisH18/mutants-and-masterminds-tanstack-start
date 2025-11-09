@@ -2,12 +2,13 @@
 import {
   HeadContent,
   Link,
+  Outlet,
   Scripts,
   createRootRoute,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { createServerFn } from '@tanstack/react-start'
 import * as React from 'react'
+import AuthedNav from '~/components/AuthedNav'
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
 import { ModeToggle } from '~/components/mode-toggle'
 import { NotFound } from '~/components/NotFound'
@@ -15,6 +16,7 @@ import { ThemeProvider } from '~/components/theme-provider'
 import appCss from '~/styles/app.css?url'
 import { seo } from '~/utils/seo'
 import { getSupabaseServerClient } from '~/utils/supabase'
+import { createServerFn } from '@tanstack/react-start'
 
 const fetchUser = createServerFn({ method: 'GET' }).handler(async () => {
   const supabase = getSupabaseServerClient()
@@ -30,10 +32,11 @@ const fetchUser = createServerFn({ method: 'GET' }).handler(async () => {
   }
 })
 
+
 export const Route = createRootRoute({
   beforeLoad: async () => {
     const user = await fetchUser()
-
+    console.log("User", user)
     return {
       user,
     }
@@ -75,19 +78,35 @@ export const Route = createRootRoute({
       { rel: 'manifest', href: '/site.webmanifest', color: '#fffff' },
       { rel: 'icon', href: '/favicon.ico' },
     ],
-    scripts: [
-      {
-        src: '/customScript.js',
-        type: 'text/javascript',
-      },
-    ],
+    // scripts: [
+    //   {
+    //     src: '/customScript.js',
+    //     type: 'text/javascript',
+    //   },
+    // ],
   }),
-  errorComponent: DefaultCatchBoundary,
+  errorComponent: (props) => {
+    return (
+      <div>
+        <DefaultCatchBoundary {...props} />
+      </div>
+    )
+  },
   notFoundComponent: () => <NotFound />,
-  shellComponent: RootDocument,
+  component: RootComponent
 })
 
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  )
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { user } = Route.useRouteContext()
+
   return (
     <html>
       <head>
@@ -105,6 +124,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           >
             Home
           </Link>{' '}
+          {user ? (<AuthedNav />) : ''}
+          <div className='ml-auto'>
+            {user ? (
+              <>
+                <span className='mr-2'>{user.email}</span>
+                <Link to='/logout'>Logout</Link>
+              </>
+            ): (
+              <Link to='/login'>Login</Link>
+            )}
+          </div>
         </div>
         <hr />
         <ThemeProvider defaultTheme='dark' storageKey='theme'>

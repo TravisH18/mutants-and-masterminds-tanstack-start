@@ -26,12 +26,12 @@ export const Route = createFileRoute('/_authed/characters')({
   component: CharactersComponent,
 })
 
-async function CharactersComponent() {
+function CharactersComponent() {
   
-  const { user } = Route.useRouteContext()
+  // const { user } = Route.useRouteContext()
   
-  const characters = await fetchCharacters()
-  console.log(characters?.characters)
+  const characters = fetchCharacters()
+  console.log(characters)
 
   return (
     <div>

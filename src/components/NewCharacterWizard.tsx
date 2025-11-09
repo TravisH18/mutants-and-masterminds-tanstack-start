@@ -1,6 +1,6 @@
 // components/NewCharacterWizard.tsx
 import { useState, useEffect } from 'react'
-import { getRouterContext, useRouter } from '@tanstack/react-router'
+import { useRouter } from '@tanstack/react-router'
 import { Tabs, TabsContent, TabsPanels, TabsTrigger, TabsTriggerList } from '~/components/retroui/Tab'
 import { Card } from './retroui/Card'
 import { AbilitiesTab } from '~/components/character-creation/AbilitiesTab'
@@ -259,10 +259,10 @@ export function NewCharacterWizard() {
             setCharacter(prev => ({ ...prev, id: characterId }))
 
             // Navigate to the character page
-            await router.navigate({
-                to: '/_authed/characters/$characterId',
-                params: { characterId }
-            })
+            // await router.navigate({
+            //     to: '/_authed/characters/$characterId',
+            //     params: { characterId }
+            // })
 
         } catch (error) {
             console.error('Error saving character:', error)

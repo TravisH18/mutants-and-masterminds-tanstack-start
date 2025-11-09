@@ -1,4 +1,4 @@
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Card } from "./retroui/Card";
 import { Text } from "./retroui/Text";
 import { Button } from "./ui/button";
@@ -10,7 +10,7 @@ export default function Dashboard() {
             <Card>
                 <Card.Header>
                     <Card.Title>
-                        <Text as="h1">Campaigns</Text>
+                        Campaigns
                     </Card.Title>
                 </Card.Header>
                 <Card.Content>
@@ -22,12 +22,17 @@ export default function Dashboard() {
             <Card>
                 <Card.Header>
                     <Card.Title>
-                        <Text as="h1">Characters</Text>
+                        Characters
                     </Card.Title>
                 </Card.Header>
                 <Card.Content>
                     <Button>View my characters</Button>
-                    <Button onClick={() => router.navigate({to: '/new-character'})}>Create new hero (or villain)</Button>
+                    {/* onClick={() => router.navigate({to: '/new-character'})} */}
+                    <Button>
+                        <Link to="/new-character">
+                            Create new hero (or villain)
+                        </Link>
+                    </Button>
                 </Card.Content>
                 
             </Card>

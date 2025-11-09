@@ -14,9 +14,11 @@ import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthedNewCharacterRouteImport } from './routes/_authed/new-character'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedCharactersRouteImport } from './routes/_authed/characters'
 import { Route as AuthedCampaignsRouteImport } from './routes/_authed/campaigns'
+import { Route as AuthedCharactersCharacterIdRouteImport } from './routes/_authed/characters.$characterId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -42,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedNewCharacterRoute = AuthedNewCharacterRouteImport.update({
+  id: '/new-character',
+  path: '/new-character',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -57,6 +64,12 @@ const AuthedCampaignsRoute = AuthedCampaignsRouteImport.update({
   path: '/campaigns',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedCharactersCharacterIdRoute =
+  AuthedCharactersCharacterIdRouteImport.update({
+    id: '/$characterId',
+    path: '/$characterId',
+    getParentRoute: () => AuthedCharactersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -64,8 +77,10 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
   '/campaigns': typeof AuthedCampaignsRoute
-  '/characters': typeof AuthedCharactersRoute
+  '/characters': typeof AuthedCharactersRouteWithChildren
   '/dashboard': typeof AuthedDashboardRoute
+  '/new-character': typeof AuthedNewCharacterRoute
+  '/characters/$characterId': typeof AuthedCharactersCharacterIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -73,8 +88,10 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
   '/campaigns': typeof AuthedCampaignsRoute
-  '/characters': typeof AuthedCharactersRoute
+  '/characters': typeof AuthedCharactersRouteWithChildren
   '/dashboard': typeof AuthedDashboardRoute
+  '/new-character': typeof AuthedNewCharacterRoute
+  '/characters/$characterId': typeof AuthedCharactersCharacterIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,8 +101,10 @@ export interface FileRoutesById {
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
   '/_authed/campaigns': typeof AuthedCampaignsRoute
-  '/_authed/characters': typeof AuthedCharactersRoute
+  '/_authed/characters': typeof AuthedCharactersRouteWithChildren
   '/_authed/dashboard': typeof AuthedDashboardRoute
+  '/_authed/new-character': typeof AuthedNewCharacterRoute
+  '/_authed/characters/$characterId': typeof AuthedCharactersCharacterIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +116,8 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/characters'
     | '/dashboard'
+    | '/new-character'
+    | '/characters/$characterId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,6 +127,8 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/characters'
     | '/dashboard'
+    | '/new-character'
+    | '/characters/$characterId'
   id:
     | '__root__'
     | '/'
@@ -116,6 +139,8 @@ export interface FileRouteTypes {
     | '/_authed/campaigns'
     | '/_authed/characters'
     | '/_authed/dashboard'
+    | '/_authed/new-character'
+    | '/_authed/characters/$characterId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,6 +188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/new-character': {
+      id: '/_authed/new-character'
+      path: '/new-character'
+      fullPath: '/new-character'
+      preLoaderRoute: typeof AuthedNewCharacterRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/dashboard': {
       id: '/_authed/dashboard'
       path: '/dashboard'
@@ -184,19 +216,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedCampaignsRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/characters/$characterId': {
+      id: '/_authed/characters/$characterId'
+      path: '/$characterId'
+      fullPath: '/characters/$characterId'
+      preLoaderRoute: typeof AuthedCharactersCharacterIdRouteImport
+      parentRoute: typeof AuthedCharactersRoute
+    }
   }
 }
 
+interface AuthedCharactersRouteChildren {
+  AuthedCharactersCharacterIdRoute: typeof AuthedCharactersCharacterIdRoute
+}
+
+const AuthedCharactersRouteChildren: AuthedCharactersRouteChildren = {
+  AuthedCharactersCharacterIdRoute: AuthedCharactersCharacterIdRoute,
+}
+
+const AuthedCharactersRouteWithChildren =
+  AuthedCharactersRoute._addFileChildren(AuthedCharactersRouteChildren)
+
 interface AuthedRouteChildren {
   AuthedCampaignsRoute: typeof AuthedCampaignsRoute
-  AuthedCharactersRoute: typeof AuthedCharactersRoute
+  AuthedCharactersRoute: typeof AuthedCharactersRouteWithChildren
   AuthedDashboardRoute: typeof AuthedDashboardRoute
+  AuthedNewCharacterRoute: typeof AuthedNewCharacterRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedCampaignsRoute: AuthedCampaignsRoute,
-  AuthedCharactersRoute: AuthedCharactersRoute,
+  AuthedCharactersRoute: AuthedCharactersRouteWithChildren,
   AuthedDashboardRoute: AuthedDashboardRoute,
+  AuthedNewCharacterRoute: AuthedNewCharacterRoute,
 }
 
 const AuthedRouteWithChildren =

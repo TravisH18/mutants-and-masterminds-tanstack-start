@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { Login } from '../components/Login'
 import { getSupabaseServerClient } from '../utils/supabase'
@@ -34,4 +34,13 @@ export const Route = createFileRoute('/_authed')({
 
     throw error
   },
+  component: AuthedLayout
 })
+
+function AuthedLayout() {
+  return (
+    <div>
+      <Outlet />
+    </div>
+  )
+}

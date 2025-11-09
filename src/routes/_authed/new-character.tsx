@@ -2,7 +2,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { NewCharacterWizard } from '~/components/NewCharacterWizard'
 
-export const Route = createFileRoute('/new-character')({
+export const Route = createFileRoute('/_authed/new-character')({
   component: NewCharacterComponent,
 })
 
