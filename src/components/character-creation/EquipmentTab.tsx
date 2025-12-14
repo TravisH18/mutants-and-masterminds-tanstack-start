@@ -4,7 +4,9 @@ import { Button } from '~/components/ui/button'
 import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Equipment } from '~/lib/types'
-
+import { Label } from "../retroui/Label"
+import { Input } from "../retroui/Input"
+import { Textarea } from '../retroui/Textarea'
 
 interface EquipmentTabProps {
   equipment: Equipment[]
@@ -72,8 +74,8 @@ export function EquipmentTab({ equipment, onEquipmentChange }: EquipmentTabProps
             <Card.Content className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Name</label>
-                  <input
+                  <Label className="text-sm font-medium">Name</Label>
+                  <Input
                     type="text"
                     value={newEquipment.name}
                     onChange={(e) => setNewEquipment({...newEquipment, name: e.target.value})}
@@ -82,7 +84,7 @@ export function EquipmentTab({ equipment, onEquipmentChange }: EquipmentTabProps
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Type</label>
+                  <Label className="text-sm font-medium">Type</Label>
                   <select
                     value={newEquipment.type}
                     onChange={(e) => setNewEquipment({...newEquipment, type: e.target.value})}
@@ -98,10 +100,10 @@ export function EquipmentTab({ equipment, onEquipmentChange }: EquipmentTabProps
               </div>
 
               <div>
-                <label className="text-sm font-medium">Description</label>
-                <textarea
+                <Label className="text-sm font-medium">Description</Label>
+                <Textarea
                   value={newEquipment.description}
-                  onChange={(e) => setNewEquipment({...newEquipment, description: e.target.value})}
+                  onChange={(e: any) => setNewEquipment({...newEquipment, description: e.target.value})}
                   className="w-full p-2 border rounded-md"
                   rows={3}
                   placeholder="Describe the equipment and its capabilities..."
@@ -109,8 +111,8 @@ export function EquipmentTab({ equipment, onEquipmentChange }: EquipmentTabProps
               </div>
 
               <div>
-                <label className="text-sm font-medium">Cost</label>
-                <input
+                <Label className="text-sm font-medium">Cost</Label>
+                <Input
                   type="number"
                   min="0"
                   value={newEquipment.cost}
@@ -169,7 +171,7 @@ export function EquipmentTab({ equipment, onEquipmentChange }: EquipmentTabProps
         </div>
 
         {/* Summary */}
-        <div className="p-4 bg-gray-50 rounded-md">
+        <div className="p-4 bg-gray-500 rounded-md">
           <h4 className="font-semibold mb-2">Equipment Summary</h4>
           <div className="text-sm">
             Total Equipment Cost: {equipment.reduce((sum, item) => sum + item.cost, 0)} points

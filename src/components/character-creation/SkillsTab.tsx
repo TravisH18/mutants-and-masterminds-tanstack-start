@@ -129,7 +129,7 @@ export function SkillsTab({ skills, onSkillsChange }: SkillsTabProps) {
         </div>
 
         {/* Summary */}
-        <div className="p-4 bg-gray-50 rounded-md">
+        <div className="p-4 bg-gray-500 rounded-md">
           <h4 className="font-semibold mb-2">Skills Summary</h4>
           <div className="text-sm">
             Total Skills Cost: {skills.reduce((sum, skill) => sum + skill.totalCost, 0)} points

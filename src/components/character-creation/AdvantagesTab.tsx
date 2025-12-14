@@ -3,6 +3,8 @@ import { Card } from '~/components/retroui/Card'
 import { Button } from '~/components/ui/button'
 import { Plus, Trash2 } from 'lucide-react'
 import { Advantage } from '~/lib/types'
+import { Label } from "../retroui/Label"
+import { Input } from "../retroui/Input"
 
 
 interface AdvantagesTabProps {
@@ -85,9 +87,11 @@ export function AdvantagesTab({ advantages, onAdvantagesChange }: AdvantagesTabP
         {/* Add Advantage Section */}
         {availableAdvantages.length > 0 && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">Add New Advantage</label>
+            <Label className="text-sm font-medium">Add New Advantage</Label>
             <div className="flex flex-wrap gap-2">
               {availableAdvantages.map(advantage => (
+                // TODO 
+                // Add tooltip to display advantage description on hover
                 <Button
                   key={advantage.name}
                   type="button"
@@ -129,8 +133,8 @@ export function AdvantagesTab({ advantages, onAdvantagesChange }: AdvantagesTabP
                   
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <label className="text-sm">Ranks:</label>
-                      <input
+                      <Label className="text-sm">Ranks:</Label>
+                      <Input
                         type="number"
                         min="1"
                         value={advantage.ranks}
@@ -139,8 +143,9 @@ export function AdvantagesTab({ advantages, onAdvantagesChange }: AdvantagesTabP
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-sm">Cost/Rank:</label>
-                      <input
+                      <Label className="text-sm">Cost/Rank:</Label>
+                      <Input
+                        disabled
                         type="number"
                         min="1"
                         value={advantage.costPerRank}
@@ -159,7 +164,7 @@ export function AdvantagesTab({ advantages, onAdvantagesChange }: AdvantagesTabP
         </div>
 
         {/* Summary */}
-        <div className="p-4 bg-gray-50 rounded-md">
+        <div className="p-4 bg-gray-500 rounded-md">
           <h4 className="font-semibold mb-2">Advantages Summary</h4>
           <div className="text-sm">
             Total Advantages Cost: {advantages.reduce((sum, adv) => sum + adv.totalCost, 0)} points

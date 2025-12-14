@@ -4,6 +4,8 @@ import { Button } from '~/components/ui/button'
 import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Complication } from '~/lib/types'
+import { Label } from "../retroui/Label"
+import { Input } from "../retroui/Input"
 
 interface ComplicationsTabProps {
   complications: Complication[]
@@ -79,8 +81,8 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
           <Card>
             <Card.Content className="p-4 space-y-4">
               <div>
-                <label className="text-sm font-medium">Complication Name</label>
-                <input
+                <Label className="text-sm font-medium">Complication Name</Label>
+                <Input
                   type="text"
                   value={newComplication.name}
                   onChange={(e) => setNewComplication({...newComplication, name: e.target.value})}
@@ -90,7 +92,7 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
               </div>
 
               <div>
-                <label className="text-sm font-medium">Description</label>
+                <Label className="text-sm font-medium">Description</Label>
                 <textarea
                   value={newComplication.description}
                   onChange={(e) => setNewComplication({...newComplication, description: e.target.value})}
@@ -102,11 +104,11 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Type</label>
+                  <Label className="text-sm font-medium">Type</Label>
                   <select
                     value={newComplication.type}
                     onChange={(e) => setNewComplication({...newComplication, type: e.target.value})}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md bg-card"
                   >
                     {complicationTypes.map(type => (
                       <option key={type} value={type}>
@@ -116,11 +118,11 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Frequency</label>
+                  <Label className="text-sm font-medium">Frequency</Label>
                   <select
                     value={newComplication.frequency}
                     onChange={(e) => setNewComplication({...newComplication, frequency: e.target.value})}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md bg-card"
                   >
                     {frequencyLevels.map(freq => (
                       <option key={freq} value={freq}>
@@ -130,11 +132,11 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Intensity</label>
+                  <Label className="text-sm font-medium">Intensity</Label>
                   <select
                     value={newComplication.intensity}
                     onChange={(e) => setNewComplication({...newComplication, intensity: e.target.value})}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md bg-card"
                   >
                     {intensityLevels.map(intensity => (
                       <option key={intensity} value={intensity}>
@@ -168,13 +170,13 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium">{complication.name}</span>
-                        <span className="text-xs px-2 py-1 bg-gray-100 rounded-full capitalize">
+                        <span className="text-xs px-2 py-1 bg-gray-500 rounded-full capitalize">
                           {complication.type}
                         </span>
-                        <span className="text-xs px-2 py-1 bg-blue-100 rounded-full capitalize">
+                        <span className="text-xs px-2 py-1 bg-blue-500 rounded-full capitalize">
                           {complication.frequency}
                         </span>
-                        <span className="text-xs px-2 py-1 bg-red-100 rounded-full capitalize">
+                        <span className="text-xs px-2 py-1 bg-red-500 rounded-full capitalize">
                           {complication.intensity}
                         </span>
                       </div>
@@ -196,7 +198,7 @@ export function ComplicationsTab({ complications, onComplicationsChange }: Compl
         </div>
 
         {/* Summary */}
-        <div className="p-4 bg-gray-50 rounded-md">
+        <div className="p-4 bg-gray-500 rounded-md">
           <h4 className="font-semibold mb-2">Complications Summary</h4>
           <div className="text-sm">
             Number of Complications: {complications.length}

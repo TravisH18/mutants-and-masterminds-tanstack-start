@@ -1,6 +1,6 @@
 // components/NewCharacterWizard.tsx
 import { useState, useEffect } from 'react'
-import { useRouter } from '@tanstack/react-router'
+import { useRouteContext, useRouter } from '@tanstack/react-router'
 import { Tabs, TabsContent, TabsPanels, TabsTrigger, TabsTriggerList } from '~/components/retroui/Tab'
 import { Card } from './retroui/Card'
 import { AbilitiesTab } from '~/components/character-creation/AbilitiesTab'
@@ -10,87 +10,21 @@ import { PowersTab } from '~/components/character-creation/PowersTab'
 import { EquipmentTab } from '~/components/character-creation/EquipmentTab'
 import { ComplicationsTab } from '~/components/character-creation/ComplicationsTab'
 import { PointsDisplay } from '~/components/character-creation/PointsDisplay'
-import { Power, Skill, Equipment, Complication, Advantage, Abilities } from '~/lib/types'
+import { Power, Skill, Equipment, Complication, Advantage, Abilities, CharacterData, PointsState } from '~/lib/types'
 import { getSupabaseServerClient } from '~/utils/supabase'
 import { toast } from 'sonner'
-
-export interface CharacterData {
-    id?: string
-    name: string
-    campaign_id?: string
-    player_id?: string
-    power_points: number
-    hero_points: number
-    power_level: number
-    dodge: number
-    parry: number
-    fortitude: number
-    toughness: number
-    will: number
-    identity?: string
-    description?: string
-    background?: string
-    abilities: Abilities
-    skills: Array<Skill>
-    advantages: Array<Advantage>
-    powers: Array<Power>
-    equipment: Array<Equipment>
-    complications: Array<Complication>
-}
-
-export interface PointsState {
-    totalPoints: number
-    spentPoints: number
-    remainingPoints: number
-    bonusPoints: number // From complications
-}
-
-export function NewCharacterWizard() {
-    const supabase = getSupabaseServerClient()
-
-    const router = useRouter()
-    const [character, setCharacter] = useState<CharacterData>({
-        name: '',
-        campaign_id: '', // You'll set this from route params or selection
-        power_points: 150,
-        hero_points: 1,
-        power_level: 10,
-        identity: '',
-        description: '',
-        background: '',
-        abilities: {
-            strength: 0,
-            stamina: 0,
-            agility: 0,
-            dexterity: 0,
-            fighting: 0,
-            intellect: 0,
-            awareness: 0,
-            presence: 0,
-        },
-        dodge: 0,
-        parry: 0,
-        fortitude: 0,
-        toughness: 0,
-        will: 0,
-        skills: [],
-        advantages: [],
-        powers: [],
-        equipment: [],
-        complications: [],
-    })
-
+import { createServerFn } from '@tanstack/react-start'
+// import { useCharacterPoints } from '~/hooks/useCharacterPoints'
+function useCharacterPoints(character: CharacterData, totalPoints: number) {
     const [points, setPoints] = useState<PointsState>({
-        totalPoints: 150, // Default for PL 10
+        totalPoints,
         spentPoints: 0,
-        remainingPoints: 150,
+        remainingPoints: totalPoints,
         bonusPoints: 0,
     })
 
-    const [isSaving, setIsSaving] = useState(false)
-
-    // Calculate total points spent whenever character data changes
     useEffect(() => {
+        // Move your points calculation logic here
         const calculatePoints = () => {
             // Ability costs (2 points per rank in M&M)
             const abilityCost = Object.values(character.abilities).reduce((sum, rank) => sum + rank * 2, 0)
@@ -120,32 +54,22 @@ export function NewCharacterWizard() {
                 bonusPoints,
             })
         }
-
         calculatePoints()
-    }, [character, points.totalPoints])
+    }, [character, totalPoints])
 
-    const updateCharacter = (updates: Partial<CharacterData>) => {
-        setCharacter(prev => ({ ...prev, ...updates }))
-    }
+    return points
+}
 
-    const handleSaveCharacter = async () => {
-        if (points.remainingPoints < 0 || !character.name) {
-            alert('Please fix validation errors before saving.')
-            return
-        }
 
-        setIsSaving(true)
+const saveCharacterFn = createServerFn({method: 'POST'})
+    .inputValidator((d: { character: CharacterData, points: PointsState }) => d)
+    .handler(async ( {data }) => {
+        const {character, points } = data
+        const supabase = getSupabaseServerClient()
+        const { user } = Route.useRouteContext()
 
-        try {
-            // Get current user
-            const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-            if (userError || !user) {
-                throw new Error('You must be logged in to save a character')
-            }
-
-            // Prepare main character data
-            const characterData = {
+        const characterData = {
                 name: character.name,
                 player_id: user.id,
                 campaign_id: character.campaign_id || null,
@@ -255,14 +179,77 @@ export function NewCharacterWizard() {
                 // You might want to show a warning but still proceed since main character saved
             }
 
+        return { characterId: characterId}
+    })
+
+export function NewCharacterWizard() {
+    
+
+    const router = useRouter()
+    const [character, setCharacter] = useState<CharacterData>({
+        name: '',
+        campaign_id: '', // You'll set this from route params or selection
+        power_points: 150,
+        hero_points: 1,
+        power_level: 10,
+        identity: '',
+        description: '',
+        background: '',
+        abilities: {
+            strength: 0,
+            stamina: 0,
+            agility: 0,
+            dexterity: 0,
+            fighting: 0,
+            intellect: 0,
+            awareness: 0,
+            presence: 0,
+        },
+        dodge: 0,
+        parry: 0,
+        fortitude: 0,
+        toughness: 0,
+        will: 0,
+        skills: [],
+        advantages: [],
+        powers: [],
+        equipment: [],
+        complications: [],
+    })
+
+    // const [points, setPoints] = useState<PointsState>({
+    //     totalPoints: 150, // Default for PL 10
+    //     spentPoints: 0,
+    //     remainingPoints: 150,
+    //     bonusPoints: 0,
+    // })
+    const points = useCharacterPoints(character, 150);
+    const [isSaving, setIsSaving] = useState(false)
+    
+
+    const updateCharacter = (updates: Partial<CharacterData>) => {
+        setCharacter(prev => ({ ...prev, ...updates }))
+    }
+
+    const handleSaveCharacter = async () => {
+        if (points.remainingPoints < 0 || !character.name) {
+            alert('Please fix validation errors before saving.')
+            return
+        }
+
+        setIsSaving(true)
+
+        try {
+            const { characterId } = await saveCharacterFn({character, points})
+
             // Update local state with the ID for future updates
             setCharacter(prev => ({ ...prev, id: characterId }))
 
             // Navigate to the character page
-            // await router.navigate({
-            //     to: '/_authed/characters/$characterId',
-            //     params: { characterId }
-            // })
+            await router.navigate({
+                to: '/characters/$characterId',
+                params: { characterId }
+            })
 
         } catch (error) {
             console.error('Error saving character:', error)
@@ -275,7 +262,7 @@ export function NewCharacterWizard() {
     return (
         <div className="container mx-auto p-6 space-y-6">
             {/* Fixed Points Display */}
-            <div className="sticky top-4 z-10">
+            <div className="sticky top-4 right-2 z-10">
                 <PointsDisplay points={points} />
             </div>
 

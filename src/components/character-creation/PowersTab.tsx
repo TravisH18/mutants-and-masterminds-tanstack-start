@@ -1,6 +1,9 @@
 // components/character-creation/PowersTab.tsx
 import { Card } from '~/components/retroui/Card'
 import { Button } from '~/components/ui/button'
+import { Label } from "../retroui/Label"
+import { Input } from "../retroui/Input"
+import { Textarea } from '../retroui/Textarea'
 import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Power } from '~/lib/types'
@@ -117,8 +120,8 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
             <Card.Content className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Power Name</label>
-                  <input
+                  <Label className="text-sm font-medium">Power Name</Label>
+                  <Input
                     type="text"
                     value={newPower.name}
                     onChange={(e) => setNewPower({...newPower, name: e.target.value})}
@@ -127,11 +130,11 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Effect</label>
+                  <Label className="text-sm font-medium">Effect</Label>
                   <select
                     value={newPower.effect}
                     onChange={(e) => setNewPower({...newPower, effect: e.target.value})}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md bg-card"
                   >
                     <option value="">Select Effect</option>
                     {powerEffects.map(effect => (
@@ -142,10 +145,10 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Description</label>
-                <textarea
+                <Label className="text-sm font-medium">Description</Label>
+                <Textarea
                   value={newPower.description}
-                  onChange={(e) => setNewPower({...newPower, description: e.target.value})}
+                  onChange={(e: any) => setNewPower({...newPower, description: e.target.value})}
                   className="w-full p-2 border rounded-md"
                   rows={2}
                 />
@@ -153,8 +156,8 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Rank</label>
-                  <input
+                  <Label className="text-sm font-medium">Rank</Label>
+                  <Input
                     type="number"
                     min="1"
                     value={newPower.rank}
@@ -163,8 +166,8 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Cost per Rank</label>
-                  <input
+                  <Label className="text-sm font-medium">Cost per Rank</Label>
+                  <Input
                     type="number"
                     min="1"
                     value={newPower.costPerRank}
@@ -173,8 +176,8 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Total Cost</label>
-                  <div className="p-2 border rounded-md bg-gray-50">
+                  <Label className="text-sm font-medium">Total Cost</Label>
+                  <div className="p-2 border rounded-md bg-gray-500">
                     {newPower.rank * newPower.costPerRank}
                   </div>
                 </div>
@@ -220,8 +223,8 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
                   
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <label className="text-sm">Rank:</label>
-                      <input
+                      <Label className="text-sm">Rank:</Label>
+                      <Input
                         type="number"
                         min="1"
                         value={power.rank}
@@ -230,8 +233,8 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-sm">Cost/Rank:</label>
-                      <input
+                      <Label className="text-sm">Cost/Rank:</Label>
+                      <Input
                         type="number"
                         min="1"
                         value={power.costPerRank}
@@ -261,7 +264,7 @@ export function PowersTab({ powers, onPowersChange }: PowersTabProps) {
         </div>
 
         {/* Summary */}
-        <div className="p-4 bg-gray-50 rounded-md">
+        <div className="p-4 0 rounded-md">
           <h4 className="font-semibold mb-2">Powers Summary</h4>
           <div className="text-sm">
             Total Powers Cost: {powers.reduce((sum, power) => sum + power.totalCost, 0)} points

@@ -59,3 +59,34 @@ export interface Abilities {
     awareness: number
     presence: number
 }
+
+export interface CharacterData {
+    id?: string
+    name: string
+    campaign_id?: string
+    player_id?: string
+    power_points: number
+    hero_points: number
+    power_level: number
+    dodge: number
+    parry: number
+    fortitude: number
+    toughness: number
+    will: number
+    identity?: string
+    description?: string
+    background?: string
+    abilities: Abilities
+    skills: Array<Skill>
+    advantages: Array<Advantage>
+    powers: Array<Power>
+    equipment: Array<Equipment>
+    complications: Array<Complication>
+}
+
+export interface PointsState {
+    totalPoints: number
+    spentPoints: number
+    remainingPoints: number
+    bonusPoints: number // From complications
+}

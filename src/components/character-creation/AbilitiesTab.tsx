@@ -1,5 +1,7 @@
 // components/character-creation/AbilitiesTab.tsx
 import { Card } from "../retroui/Card"
+import { Label } from "../retroui/Label"
+import { Input } from "../retroui/Input"
 
 interface AbilitiesTabProps {
   abilities: {
@@ -48,10 +50,10 @@ export function AbilitiesTab({ abilities, onAbilitiesChange }: AbilitiesTabProps
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(abilityLabels).map(([key, label]) => (
             <div key={key} className="space-y-2">
-              <label className="block text-sm font-medium">
+              <Label className="block text-sm font-medium">
                 {label}
-              </label>
-              <input
+              </Label>
+              <Input
                 type="number"
                 min="0"
                 value={abilities[key as keyof typeof abilities]}
@@ -65,7 +67,7 @@ export function AbilitiesTab({ abilities, onAbilitiesChange }: AbilitiesTabProps
           ))}
         </div>
         
-        <div className="mt-6 p-4 bg-gray-50 rounded-md">
+        <div className="mt-6 p-4 bg-gray-500 rounded-md">
           <h4 className="font-semibold mb-2">Ability Summary</h4>
           <div className="text-sm">
             Total Ability Cost: {
